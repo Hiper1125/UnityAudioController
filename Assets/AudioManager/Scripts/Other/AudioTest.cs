@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using AudioController;
@@ -25,8 +26,6 @@ public class AudioTest : MonoBehaviour
     public Slider musicVolume;
     public Slider sfxVolume;
 
-    private AudioSource _musicSource;
-
     private void Awake()
     {
         play2DButton.onClick.AddListener(Play2DClicked);
@@ -44,6 +43,16 @@ public class AudioTest : MonoBehaviour
         sfxVolume.onValueChanged.AddListener(delegate(float volume) { SetVolume(MixerChannel.Sounds, volume); });
 
         stopMusicButton.enabled = false;
+        
+        SceneManager.activeSceneChanged += delegate(Scene newScene, Scene scene) { ApplySlidersVolume(); };
+    }
+
+    private void Start()
+    {
+        playMusicButton.enabled = !AudioManager.Instance.IsPlaying;
+        stopMusicButton.enabled = AudioManager.Instance.IsPlaying;
+
+        ApplySlidersVolume();
     }
 
     private void Play2DClicked()
@@ -56,16 +65,16 @@ public class AudioTest : MonoBehaviour
     {
         AudioManager.Instance.PlaySound2D(buttonClick);
         AudioManager.Instance.PlaySound3D(explosion,
-            new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f)));
+            new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f), Random.Range(-2.5f, 2.5f)), FindObjectOfType<AudioManager>().gameObject.transform);
     }
 
     private void PlayMusicClicked()
     {
         AudioManager.Instance.PlaySound2D(buttonClick);
 
-        if (_musicSource == null)
+        if (AudioManager.Instance.IsPlaying == false)
         {
-            _musicSource = AudioManager.Instance.PlayMusic(music);
+            AudioManager.Instance.PlayMusic(music);
             playMusicButton.enabled = false;
             stopMusicButton.enabled = true;
         }
@@ -75,12 +84,11 @@ public class AudioTest : MonoBehaviour
     {
         AudioManager.Instance.PlaySound2D(buttonClick);
 
-        if (_musicSource != null)
+        if (AudioManager.Instance.IsPlaying == true)
         {
-            AudioManager.Instance.StopMusic(_musicSource);
+            AudioManager.Instance.StopMusic(music);
             playMusicButton.enabled = true;
             stopMusicButton.enabled = false;
-            _musicSource = null;
         }
     }
 
@@ -104,5 +112,12 @@ public class AudioTest : MonoBehaviour
     private void ReloadScene()
     {
         SceneManager.LoadScene("AudioControllerTemplate");
+    }
+
+    private void ApplySlidersVolume()
+    {
+        SetVolume(MixerChannel.Master, generalVolume.value);
+        SetVolume(MixerChannel.Music, musicVolume.value);
+        SetVolume(MixerChannel.Sounds, sfxVolume.value);
     }
 }
