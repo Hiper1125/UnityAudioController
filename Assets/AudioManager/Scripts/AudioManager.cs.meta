@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 58f74ca6ed82a6b42a053f23854ab7cf
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - refSound2D: {fileID: 6292811700911898435, guid: 75bf49209790fa14ea7e6498275ea078, type: 3}
+  - refSound3D: {fileID: 1660808686268516667, guid: f29120e59d24a2640b37623db150a675, type: 3}
+  - loadedSFX: {instanceID: 0}
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 73ea4ebac7ef2204c838da875b90730c, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
